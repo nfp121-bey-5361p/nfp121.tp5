@@ -3,6 +3,10 @@ package question3;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class TreeSetFactory/* à compléter */implements Factory/* à compléter */{
+public class TreeSetFactory<T extends Comparable> implements Factory<Set<T>> {
 
+    @Override
+    public Set<T> create() {
+        return new TreeSet<T>();
+    }
 }

@@ -1,5 +1,13 @@
 #BlueJ class context
 comment0.target=EnsembleTest
 comment1.params=
-comment1.target=void\ testUnion()
-numComments=2
+comment1.target=void\ testAdd()
+comment2.params=
+comment2.target=void\ testUnion()
+comment3.params=
+comment3.target=void\ testInter()
+comment4.params=
+comment4.target=void\ testDiff()
+comment5.params=
+comment5.target=void\ testDiffSym()
+numComments=6

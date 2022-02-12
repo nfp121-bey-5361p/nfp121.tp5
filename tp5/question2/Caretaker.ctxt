@@ -1,0 +1,8 @@
+#BlueJ class context
+comment0.target=Caretaker
+comment0.text=\r\n\ Classe\ gradien\ de\ la\ liste\ memento\r\n\r\n
+comment1.params=
+comment1.target=JPanelListe2.Memento\ getMemento()
+comment2.params=memento
+comment2.target=void\ setMemento(JPanelListe2.Memento)
+numComments=3

@@ -33,11 +33,14 @@ public class JPanelListe2 extends JPanel implements ActionListener, ItemListener
 
     private List<String> liste;
     private Map<String, Integer> occurrences;
+    
+    private Caretaker caretaker;
 
     public JPanelListe2(List<String> liste, Map<String, Integer> occurrences) {
         this.liste = liste;
         this.occurrences = occurrences;
-
+        this.caretaker = new Caretaker();
+        
         cmd.setLayout(new GridLayout(3, 1));
 
         cmd.add(afficheur);
@@ -67,7 +70,13 @@ public class JPanelListe2 extends JPanel implements ActionListener, ItemListener
         add(texte, "Center");
 
         boutonRechercher.addActionListener(this);
-        // à compléter;
+        boutonRechercher.addActionListener(this);
+        saisie.addActionListener(this);
+        boutonRetirer.addActionListener(this);
+        ordreCroissant.addItemListener(this);
+        ordreDecroissant.addItemListener(this);
+        boutonOccurrences.addActionListener(this);
+        boutonAnnuler.addActionListener(this);
 
     }
 
@@ -80,6 +89,7 @@ public class JPanelListe2 extends JPanel implements ActionListener, ItemListener
                 afficheur.setText("résultat de la recherche de : "
                     + saisie.getText() + " -->  " + res);
             } else if (ae.getSource() == boutonRetirer) {
+                caretaker.setMemento(createMemento());
                 res = retirerDeLaListeTousLesElementsCommencantPar(saisie
                     .getText());
                 afficheur
@@ -91,7 +101,11 @@ public class JPanelListe2 extends JPanel implements ActionListener, ItemListener
                     afficheur.setText(" -->  " + occur + " occurrence(s)");
                 else
                     afficheur.setText(" -->  ??? ");
+            } else if (ae.getSource() == boutonAnnuler) {
+                setMemento(caretaker.getMemento());
+                recalculerOccurrence(liste);
             }
+            
             texte.setText(liste.toString());
 
         } catch (Exception e) {
@@ -100,20 +114,70 @@ public class JPanelListe2 extends JPanel implements ActionListener, ItemListener
     }
 
     public void itemStateChanged(ItemEvent ie) {
+        caretaker.setMemento(createMemento());
         if (ie.getSource() == ordreCroissant)
-        ;// à compléter
-        else if (ie.getSource() == ordreDecroissant)
-        ;// à compléter
-
+            Collections.sort(liste);
+        else if (ie.getSource() == ordreDecroissant) {
+            Collections.sort(liste, new Comparator<String>() {
+                @Override
+                public int compare(String mot1, String mot2) {
+                    return mot2.compareTo(mot1);
+                } 
+            });
+        }
         texte.setText(liste.toString());
     }
 
     private boolean retirerDeLaListeTousLesElementsCommencantPar(String prefixe) {
         boolean resultat = false;
-        // à compléter
-        // à compléter
-        // à compléter
+        List<String> motsAvecPrefixe = new LinkedList<String>();
+        for (String mot : liste) {
+            if (mot.startsWith(prefixe)) 
+                motsAvecPrefixe.add(mot);
+        }
+        resultat = liste.removeAll(motsAvecPrefixe);
+        if (resultat)
+            resetOccurrence(motsAvecPrefixe);
         return resultat;
+    }
+    
+    private void resetOccurrence(List<String> mots) {
+        for (String mot : mots) {
+            occurrences.put(mot, 0);
+        }
+    }
+    
+    private void recalculerOccurrence(List<String> mots) {
+        occurrences = Chapitre2CoreJava2.occurrencesDesMots(mots);
+    }
+    
+    public void setListe(List<String> liste) {
+        this.liste = liste;
+    }
+    
+    public Memento createMemento() {
+        Memento memento = new Memento();
+        memento.setState();
+        
+        return memento;
+    }
+    
+    public void setMemento(Memento memento) {
+        if (memento == null)
+            return;
+        memento.getState();
+    }
+    
+    public class Memento {
+        private List<String> mementoListe;
+        
+        public void setState() {
+            mementoListe = new LinkedList<String>(liste);
+        }
+        
+        public void getState() {
+            setListe(mementoListe);
+        }
     }
 
 }
